@@ -5,7 +5,10 @@ const emailInputRef = document.querySelector('[name ="email"]');
 const messageinputRef = document.querySelector('[name ="message"]');
 const STORAGE_KEY = "feedback-form-state";
 
-const formData = {};
+let formData = {
+    email: "",
+    message: "",
+};
 
 updateOutput();
 
@@ -18,19 +21,27 @@ function onFormInput(event) {
 }
 
 function updateOutput () {
-    const savedData = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    const savedFormData = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if(savedFormData) {
+        formData = savedFormData;
+    }   
+   
+    if (formData && formData['email']) {
+    emailInputRef.value = formData['email'];}
 
-    if (savedData?.['email']) {
-    emailInputRef.value = savedData['email'];}
-
-    if (savedData?.['message']) {
-    messageinputRef.value = savedData['message'];}
+    if (formData && formData['message']) {
+    messageinputRef.value = formData['message'];}
 }
 
 function onFormSubmit (event) {
+    if (formData.email.length === 0 || formData.message.length === 0) {
+        return alert("Warning! All forms must be filled");
+    }
     event.preventDefault();
-    event.target.reset();
     console.log(formData);
+    event.target.reset();
+    formData.email = "",
+    formData.message = "",    
     localStorage.removeItem(STORAGE_KEY);
 }
 
